@@ -8,7 +8,7 @@ An agent a small Indian business owner can ask, in Hindi or English:
 
 It reads payments, orders, refunds and settlements through the **official [Razorpay MCP server](https://github.com/razorpay/razorpay-mcp-server)**. It drafts refunds and payment links, but **nothing moves until the merchant clicks Approve**. It also sends a **daily health digest** on its own: failure rate, top failure reasons and refund spikes.
 
-**Live demo:** _deploying, link coming shortly_ · **Demo video:** _coming soon_
+**Live demo:** https://merchant-ops-copilot.onrender.com (free plan: the first visit after a quiet spell takes about a minute to wake up) · **Demo video:** _coming soon_
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Divyagoyal002/merchant-ops-copilot)
 
