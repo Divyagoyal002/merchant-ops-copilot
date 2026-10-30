@@ -1,7 +1,7 @@
 import logging
 import os
 
-NOISY_LOGGERS = ("httpx", "httpcore", "mcp", "uvicorn", "uvicorn.access", "langfuse", "gradio", "urllib3")
+NOISY_LOGGERS = ("httpx", "httpx2", "httpcore", "mcp", "uvicorn", "uvicorn.access", "langfuse", "gradio", "urllib3")
 
 
 def setup_logging(default_level: str = "INFO") -> None:

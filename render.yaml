@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: merchant-ops-copilot
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: GRADIO_SERVER_NAME
+        value: 0.0.0.0
+      - key: GRADIO_SERVER_PORT
+        value: "10000"
+      - key: DATA_SOURCE
+        value: fixtures
+      - key: LLM_MODEL
+        value: groq:openai/gpt-oss-120b
+      - key: GROQ_API_KEY
+        sync: false

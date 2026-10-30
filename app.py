@@ -106,7 +106,7 @@ async def on_digest(language: str) -> str:
         return friendly_error(exc)
 
 
-with gr.Blocks(title="Merchant Ops Copilot") as demo:
+with gr.Blocks(title="Merchant Ops Copilot", analytics_enabled=False) as demo:
     thread = gr.State(lambda: uuid.uuid4().hex)
     gr.Markdown(
         "# Merchant Ops Copilot\n"

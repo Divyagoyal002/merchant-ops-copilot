@@ -1,15 +1,3 @@
----
-title: Merchant Ops Copilot
-emoji: 💸
-colorFrom: blue
-colorTo: indigo
-sdk: gradio
-sdk_version: 6.31.0
-python_version: "3.12"
-app_file: app.py
-pinned: false
----
-
 # Merchant Ops Copilot
 
 An agent a small Indian business owner can ask, in Hindi or English:
@@ -20,7 +8,9 @@ An agent a small Indian business owner can ask, in Hindi or English:
 
 It reads payments, orders, refunds and settlements through the **official [Razorpay MCP server](https://github.com/razorpay/razorpay-mcp-server)**. It drafts refunds and payment links, but **nothing moves until the merchant clicks Approve**. It also sends a **daily health digest** on its own: failure rate, top failure reasons and refund spikes.
 
-**Links:** live demo `<your HF Space URL>` · demo video `<link>`
+**Live demo:** _deploying, link coming shortly_ · **Demo video:** _coming soon_
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Divyagoyal002/merchant-ops-copilot)
 
 ## Results
 
@@ -94,7 +84,7 @@ python3.12 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 cp .env.example .env          # add GROQ_API_KEY at minimum
 
-python app.py                 # Gradio UI on http://127.0.0.1:7860
+python app.py                 # Gradio UI on http://127.0.0.1:7860 (LOG_LEVEL=DEBUG for more detail)
 copilot chat                  # terminal chat
 copilot digest --lang Hindi   # daily digest
 pytest -q                     # offline guardrail tests, no keys needed
@@ -113,7 +103,7 @@ python scripts/seed_razorpay_test.py links
 Razorpay test accounts usually have no settlements, so settlement questions are best demoed on the fixtures.
 
 ### Deploy
-- **Hugging Face Spaces:** create a Gradio Space, push this repo, and add `GROQ_API_KEY` (plus Langfuse keys if wanted) as Space secrets. The front matter at the top of this README configures the Space.
+- **Render (free):** click the button above, or New → Blueprint in the Render dashboard and pick this repo. [render.yaml](render.yaml) sets everything up; Render asks only for `GROQ_API_KEY`. The free plan sleeps after 15 idle minutes, so the first visit after a while takes about a minute to load. Hugging Face Spaces would also work, but Gradio Spaces now need a PRO plan.
 - **CI:** [.github/workflows/evals.yml](.github/workflows/evals.yml) runs the tests and the 8-case smoke evals on every push, and the full 31 cases nightly or on manual dispatch. Add `GROQ_API_KEY` as a repo secret. Scores appear in the job summary, and the build fails below 80% or on any unapproved execution.
 - **Digest:** [.github/workflows/digest.yml](.github/workflows/digest.yml) runs daily at 09:00 IST against your test account and posts to `DIGEST_WEBHOOK_URL`.
 - **Tracing:** set `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` to get a trace per question, with each conversation grouped as a session.
