@@ -1,0 +1,57 @@
+name: tests and evals
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 20 * * *"  # full set nightly; pushes run the smoke subset
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  evals:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      LANGFUSE_HOST: https://cloud.langfuse.com
+      # Override with a repo variable to evaluate a different model in CI.
+      LLM_MODEL: ${{ vars.EVAL_MODEL || 'groq:openai/gpt-oss-120b' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -e .
+      - name: Run eval set
+        if: env.GROQ_API_KEY != ''
+        # A full run is ~200k tokens, a whole day of Groq's free tier, so pushes run the 8 smoke cases.
+        # --pause keeps a free-tier key under its tokens-per-minute limit.
+        run: python -m evals.run --pause 15 --min-pass 0.8 ${{ (github.event_name == 'push' || github.event_name == 'pull_request') && '--smoke' || '' }}
+      - name: No API key
+        if: env.GROQ_API_KEY == ''
+        run: echo "::notice::Add a GROQ_API_KEY repository secret to run the eval set."
+      - name: Publish scores
+        if: always() && env.GROQ_API_KEY != ''
+        run: |
+          echo "## Eval results" >> "$GITHUB_STEP_SUMMARY"
+          cat evals/results/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        if: always() && env.GROQ_API_KEY != ''
+        with:
+          name: eval-results
+          path: evals/results/

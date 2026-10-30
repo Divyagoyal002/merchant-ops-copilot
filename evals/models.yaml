@@ -1,0 +1,10 @@
+# List prices in USD per 1M tokens, used to turn token counts into ₹/query.
+# On a free tier you pay nothing; this is what the same traffic would cost on
+# the paid tier. Prices change: check the provider's pricing page before quoting.
+usd_to_inr: 88.0
+
+prices:
+  groq:openai/gpt-oss-120b: {input: 0.15, output: 0.60}
+  groq:openai/gpt-oss-20b: {input: 0.075, output: 0.30}
+  groq:qwen/qwen3.8-27b: {input: 0.80, output: 4.00}
+  gemini:gemini-2.5-flash: {input: 0.30, output: 2.50}
